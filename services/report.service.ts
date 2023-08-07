@@ -31,7 +31,7 @@ const getReportDataById = async (id: number) => {
 }
 
 const convertDate = (rawDate: Date) => {
-    return new Intl.DateTimeFormat('en-GB', {
+    return new Intl.DateTimeFormat('fr-CA', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
