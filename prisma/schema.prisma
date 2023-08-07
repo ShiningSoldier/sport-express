@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DB_URL")
+}
+
+model users {
+  id             Int       @id @default(autoincrement())
+  name           String
+  email          String    @unique(map: "sqlite_autoindex_users_1")
+  password       String
+  height         Float?
+  birth_date     DateTime?
+  goal           String    @default("MAINTAIN")
+  activity_level String    @default("LIGHT")
+  reports        reports[]
+}
+
+model reports {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  user        users    @relation(fields: [user_id], references: [id])
+  date        DateTime
+  weight      Float
+  leg         Float
+  waist       Float
+  chest       Float
+  arm         Float
+  photo_front String
+  photo_back  String
+}
