@@ -11,6 +11,6 @@ export const checkUserAuthenticated = async (req: Request, res: Response, next: 
         req.body.id = decodedToken.id;
         next();
     } catch (error: any) {
-        return res.status(500).json({ message: error.message });
+        return res.status(401).json({ message: error.message });
     }
 }
