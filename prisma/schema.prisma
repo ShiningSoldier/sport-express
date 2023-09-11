@@ -8,22 +8,24 @@ datasource db {
 }
 
 model users {
-  id             Int       @id @default(autoincrement())
+  id             Int        @id @default(autoincrement())
   name           String
-  email          String    @unique(map: "sqlite_autoindex_users_1")
+  email          String     @unique(map: "sqlite_autoindex_users_1")
+  gender         String     @default("OTHER")
   password       String
   height         Float?
-  birth_date     DateTime?
-  goal           String    @default("MAINTAIN")
-  activity_level String    @default("LIGHT")
+  birth_date     String?
+  goal           String     @default("MAINTAIN")
+  activity_level String     @default("LIGHT")
   reports        reports[]
+  exercises      exercise[]
 }
 
 model reports {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   user_id     Int
-  user        users    @relation(fields: [user_id], references: [id])
-  date        DateTime
+  user        users  @relation(fields: [user_id], references: [id])
+  date        String
   weight      Float
   leg         Float
   waist       Float
@@ -31,4 +33,16 @@ model reports {
   arm         Float
   photo_front String
   photo_back  String
+}
+
+model exercise {
+  id         Int    @id @default(autoincrement())
+  user_id    Int
+  user       users  @relation(fields: [user_id], references: [id])
+  name       String
+  day_number Int
+  sets       Int
+  reps       Int
+  min_weight Float
+  max_weight Float
 }

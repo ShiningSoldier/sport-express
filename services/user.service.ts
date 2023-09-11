@@ -1,4 +1,4 @@
-import {BasicUser, UpdateUser, User} from "../types/user";
+import {BasicUser, AdditionalUserData} from "../types/user";
 import prisma from "../client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -36,6 +36,7 @@ export const getUserById = async (id: number) => {
             id: true,
             name: true,
             email: true,
+            gender: true,
             height: true,
             birth_date: true,
             goal: true,
@@ -44,14 +45,14 @@ export const getUserById = async (id: number) => {
     })
 }
 
-export const updateUserById = async (id: number, updatedUserData: UpdateUser) => {
-    console.log(updatedUserData.birth_date)
+export const updateUserById = async (id: number, updatedUserData: AdditionalUserData) => {
     await prisma.users.update({
         where: {
             id: id
         },
         data: {
             height: updatedUserData.height,
+            gender: updatedUserData.gender,
             birth_date: updatedUserData.birth_date,
             goal: updatedUserData.goal,
             activity_level: updatedUserData.activity_level

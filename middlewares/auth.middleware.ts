@@ -6,7 +6,7 @@ export const checkUserAuthenticated = async (req: Request, res: Response, next: 
     try {
         const token = req.cookies.token;
         if (!token) return res.status(401).json({ message: "Unauthorized" });
-        const decodedToken = await jwt.verify(token, process.env.JWT_SECRET as string) as decodedTokenType;
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as decodedTokenType;
         if (!decodedToken) return res.status(401).json({ message: "Unauthorized" });
         req.body.id = decodedToken.id;
         next();

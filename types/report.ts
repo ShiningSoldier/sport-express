@@ -1,7 +1,7 @@
 export interface BasicReport {
     id?: number;
     user_id: number;
-    date: string|Date;
+    date: string;
     weight: number;
     leg: number;
     waist: number;

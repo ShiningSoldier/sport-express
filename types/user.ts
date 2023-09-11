@@ -20,15 +20,17 @@ export interface BasicUser {
 }
 
 export interface User extends BasicUser {
+    gender: string;
     height: number;
-    birth_date: Date;
+    birth_date: string;
     goal: Goal;
     activity_level: ActivityLevel;
 }
 
-export interface UpdateUser {
+export interface AdditionalUserData {
+    gender: string,
     height: number,
-    birth_date: Date,
+    birth_date: string,
     goal: Goal,
-    activity_level: ActivityLevel
+    activity_level: ActivityLevel,
 }

@@ -43,7 +43,7 @@ const createReport = async (req: Request, res: Response) => {
         const newReport: BasicReport = req.body;
         newReport.user_id = id;
         const photos = req.files as ReportPhotoFiles;
-        await checkReportExists(newReport.user_id, newReport.date as string);
+        await checkReportExists(newReport.user_id, newReport.date);
         const photoNames = await storeReportPhotos(newReport, photos)
         const newReportData: Report = prepareReportData(newReport, photoNames);
         await storeReport(newReportData)

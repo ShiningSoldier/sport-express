@@ -13,9 +13,7 @@ userRouter.post(
     body('height').optional().default(null).customSanitizer((value) => {
         return value ? parseFloat(value) : value;
     }).isNumeric().withMessage('Height must be a number'),
-    body('birth_date').optional().default(null).customSanitizer((value) => {
-        return value ? new Date(value).toISOString() : value;
-    }).isDate().withMessage('Birth date must be a date'),
+    body('birth_date').optional().default(null).isDate().withMessage('Birth date must be a date'),
     body('goal').isIn(Object.keys(Goal)).withMessage('Goal must be one of lose, maintain or gain'),
     body('activity_level').isIn(Object.keys(ActivityLevel)).withMessage('Activity level must be one of sedentary, light, moderate, active or very active'),
     updateUser

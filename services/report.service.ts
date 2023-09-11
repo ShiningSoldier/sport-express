@@ -3,8 +3,8 @@ import prisma from "../client";
 import path from "path";
 import fs from "fs/promises";
 
-const getReportsByDate = async (startDate: string, endDate: string, userId: number) => {
-    const reports = await prisma.reports.findMany({
+export const getReportsByDate = async (startDate: string, endDate: string, userId: number) => {
+    return prisma.reports.findMany({
         where: {
             user_id: userId,
             date: {
@@ -13,16 +13,9 @@ const getReportsByDate = async (startDate: string, endDate: string, userId: numb
             }
         }
     });
-
-    return reports.map(report => {
-        return {
-            ...report,
-            date: convertDate(report.date)
-        }
-    });
 }
 
-const getReportDataById = async (id: number) => {
+export const getReportDataById = async (id: number) => {
     return prisma.reports.findUnique({
         where: {
             id
@@ -38,7 +31,7 @@ const convertDate = (rawDate: Date) => {
     }).format(rawDate);
 }
 
-const checkReportExists = async (userId: number, reportDate: string) => {
+export const checkReportExists = async (userId: number, reportDate: string) => {
     const date = new Date(reportDate).toISOString();
     const reportExists = await prisma.reports.findFirst({
         where: {
@@ -49,7 +42,7 @@ const checkReportExists = async (userId: number, reportDate: string) => {
     if (reportExists) throw new Error("Report for this date already exists");
 }
 
-const storeReportPhotos = async (reportData: BasicReport, reportPhotos: ReportPhotoFiles): Promise<ReportPhotoNames> => {
+export const storeReportPhotos = async (reportData: BasicReport, reportPhotos: ReportPhotoFiles): Promise<ReportPhotoNames> => {
     if (!reportPhotos) {
         throw new Error("No photos were uploaded");
     }
@@ -63,7 +56,7 @@ const storeReportPhotos = async (reportData: BasicReport, reportPhotos: ReportPh
     return {photo_front: newFrontPhotoName, photo_back: newBackPhotoName};
 }
 
-const prepareReportData = (reportData: BasicReport, reportPhotos: ReportPhotoNames): Report => {
+export const prepareReportData = (reportData: BasicReport, reportPhotos: ReportPhotoNames): Report => {
     return {
         ...reportData,
         photo_front: reportPhotos.photo_front,
@@ -71,11 +64,11 @@ const prepareReportData = (reportData: BasicReport, reportPhotos: ReportPhotoNam
     }
 }
 
-const storeReport = async (report: Report) => {
+export const storeReport = async (report: Report) => {
     await prisma.reports.create({
         data: {
             user_id: report.user_id,
-            date: new Date(report.date).toISOString(),
+            date: report.date,
             weight: report.weight,
             leg: report.leg,
             waist: report.waist,
@@ -98,7 +91,7 @@ const savePhotos = async (photo: Express.Multer.File, newName: string, pathToUpl
     fs.writeFile(path.join(pathToUpload, newName), photo.buffer);
 }
 
-const getDatesRange = (rawStartDate: string): ReportDates => {
+export const getDatesRange = (rawStartDate: string): ReportDates => {
     const startDate = new Date(rawStartDate);
     const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
 
@@ -108,14 +101,14 @@ const getDatesRange = (rawStartDate: string): ReportDates => {
     }
 }
 
-const deleteReportPhotos = async (reportData: Report) => {
+export const deleteReportPhotos = async (reportData: Report) => {
     const date = new Date(reportData.date);
     const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     const pathToStore = await getPathToPhotos(reportData.user_id, formattedDate);
     await fs.rm(pathToStore, {recursive: true, force: true});
 }
 
-const deleteReportFromDb = async (reportId: number, userId: number) => {
+export const deleteReportFromDb = async (reportId: number, userId: number) => {
     await prisma.reports.delete({
         where: {
             id: reportId,
@@ -124,14 +117,13 @@ const deleteReportFromDb = async (reportId: number, userId: number) => {
     });
 }
 
-export {
-    getReportDataById,
-    checkReportExists,
-    storeReportPhotos,
-    storeReport,
-    prepareReportData,
-    getReportsByDate,
-    getDatesRange,
-    deleteReportPhotos,
-    deleteReportFromDb
+export const getLastReportByUserId = async (userId: number) => {
+    return prisma.reports.findFirst({
+        where: {
+            user_id: userId
+        },
+        orderBy: {
+            date: 'desc'
+        }
+    });
 }

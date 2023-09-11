@@ -5,12 +5,13 @@ import authRouter from './routes/auth.router';
 import userRouter from "./routes/user.router";
 import reportRouter from "./routes/report.router";
 import statisticsRouter from "./routes/statistics.router";
+import exerciseRouter from "./routes/exercise.router";
 import cookieParser from 'cookie-parser';
 import {Request, Response} from "express";
 import "dotenv/config";
 
 app.use(cors({
-    origin: 'http://127.0.0.1:5173',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
@@ -22,6 +23,7 @@ app.use('/', authRouter);
 app.use('/user', userRouter);
 app.use('/report', reportRouter);
 app.use('/statistics', statisticsRouter);
+app.use('/exercises', exerciseRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack)
